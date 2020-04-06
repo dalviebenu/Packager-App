@@ -4,6 +4,21 @@ from packager import pack
 from utils import *
 from pathlib import Path
 
+default_text = ["Product Name", "Version", "Description", "Base Game Version", "Min Engine Version", "Path In",
+                "Path Out", "UUID Override: World Template", "UUID Override: Skin Pack"]
+
+
+def default_text_erase(event):
+    if event.widget.get() in default_text:
+        event.widget.delete(0, tk.END)
+
+
+def default_text_write(event):
+    val = event.widget.get()
+
+    if val == "":
+        event.widget.insert(0, "Product Name")
+
 
 def write_json_not_sorted(path, data):
     with open(path, 'w', encoding='UTF-8') as f:
@@ -111,9 +126,11 @@ upper_frame.grid(row=1, column=0, padx=10, pady=5, sticky='news')
 prod_name = tk.Entry(master=upper_frame, highlightbackground=background, bg=entry_background, fg=font_color)
 prod_name.configure(width=50)
 prod_name.insert(0, 'Product Name')
+prod_name.bind("<Button-1>", default_text_erase)
+prod_name.bind("<FocusOut>", default_text_write)
 prod_name.pack(side=tk.LEFT, padx=20, pady=5)
 
-version = tk.Entry(master=upper_frame, highlightbackground=background, background=entry_background)
+version = tk.Entry(master=upper_frame, highlightbackground=background, bg=entry_background, fg=font_color)
 version.configure(width=12)
 version.insert(0, 'Version')
 version.pack(side=tk.RIGHT, padx=20)
@@ -122,7 +139,7 @@ version.pack(side=tk.RIGHT, padx=20)
 desc_frame = tk.Frame(master=window, relief=tk.FLAT, borderwidth=1, bg=background)
 desc_frame.grid(row=2, column=0, padx=20, pady=3)
 
-desc = tk.Text(master=desc_frame, bg=entry_background)
+desc = tk.Text(master=desc_frame, bg=entry_background, fg=font_color)
 desc.configure(height=5, width=77)
 desc.configure(highlightbackground=background)
 desc.insert("1.0", "Description")
@@ -133,16 +150,18 @@ desc.pack(side=tk.LEFT)
 game_version_frame = tk.Frame(master=window, bg=background)
 game_version_frame.grid(row=3, column=0, padx=28, pady=5, sticky='news')
 
-base_game_version = tk.Entry(master=game_version_frame, width=15, bg=entry_background, highlightbackground=background)
+base_game_version = tk.Entry(master=game_version_frame, width=15, bg=entry_background,
+                             fg=font_color, highlightbackground=background)
 base_game_version.insert(0, "Base Game Version")
 base_game_version.pack(side=tk.LEFT)
 
-min_eng_version = tk.Entry(master=game_version_frame, width=15, bg=entry_background, highlightbackground=background)
+min_eng_version = tk.Entry(master=game_version_frame, width=15, bg=entry_background,
+                           fg=font_color, highlightbackground=background)
 min_eng_version.insert(0, "Min Engine Version")
 min_eng_version.pack(side=tk.LEFT, padx=10)
 
 check_var = tk.IntVar()
-lock_temp = tk.Checkbutton(master=game_version_frame, text='Lock Template Options',
+lock_temp = tk.Checkbutton(master=game_version_frame, text='Lock Template Options', fg=font_color,
                            highlightbackground=background, background=background, variable=check_var)
 lock_temp.select()
 lock_temp.pack(side=tk.LEFT)
@@ -152,11 +171,13 @@ widget_width = 68
 path_frame = tk.Frame(master=window, background=background)
 path_frame.grid(row=4, column=0, sticky='nw', padx=28, pady=5, columnspan=2)
 
-path_in = tk.Entry(master=path_frame, width=widget_width, bg=entry_background, highlightbackground=background)
+path_in = tk.Entry(master=path_frame, width=widget_width, bg=entry_background, fg=font_color,
+                   highlightbackground=background)
 path_in.insert(0, "Path In")
 path_in.pack( pady=5)
 
-path_out = tk.Entry(master=path_frame, width=widget_width, bg=entry_background, highlightbackground=background)
+path_out = tk.Entry(master=path_frame, width=widget_width, bg=entry_background, fg=font_color,
+                    highlightbackground=background)
 path_out.insert(0, "Path Out")
 path_out.pack( pady=5)
 
@@ -166,18 +187,20 @@ uuid_check_box.grid(row=5, column=0, sticky='nw', padx=28, pady=5, columnspan=2)
 
 check_uuid = tk.IntVar()
 uuid_check = tk.Checkbutton(master=uuid_check_box, text='Override UUID', highlightbackground=background,
-                            background=background, variable=check_uuid, width=12)
+                            fg=font_color, background=background, variable=check_uuid, width=12)
 uuid_check.pack(pady=5)
 
 # insert uuids
 uuid_frame = tk.Frame(master=window, background=background)
 uuid_frame.grid(row=6, column=0, sticky='nw', padx=28, pady=5, columnspan=2)
 
-uuid_world = tk.Entry(master=uuid_frame, width=widget_width, bg=entry_background, highlightbackground=background)
+uuid_world = tk.Entry(master=uuid_frame, width=widget_width, bg=entry_background, fg=font_color,
+                      highlightbackground=background)
 uuid_world.insert(0, "UUID Override: World Template")
 uuid_world.pack(pady=5)
 
-uuid_skin = tk.Entry(master=uuid_frame, width=widget_width, bg=entry_background, highlightbackground=background)
+uuid_skin = tk.Entry(master=uuid_frame, width=widget_width, bg=entry_background, fg=font_color,
+                     highlightbackground=background)
 uuid_skin.insert(0, "UUID Override: Skin Pack")
 uuid_skin.pack(pady=5)
 
