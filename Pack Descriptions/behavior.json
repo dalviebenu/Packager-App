@@ -1,0 +1,26 @@
+{
+  "folders": [
+    "animation_controllers",
+    "animations",
+    "entities",
+    "items",
+    "loot_tables",
+    "recipes",
+    "scripts",
+    "spawn_rules",
+    "trading",
+    "functions"
+  ],
+  "json_files": [],
+  "manifest_args": [
+    "header/min_engine_version"
+  ],
+  "txt_args": {
+    "pack.name": "{name} Behavior Pack",
+    "pack.description": "Adds behavior elements to the '{name}' experience."
+  },
+  "name": "{short_name}_BP",
+  "manifest_type": "data",
+  "folder_name": "behavior_packs",
+  "declaration_name": "world_behavior_packs.json"
+}

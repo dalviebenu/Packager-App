@@ -1,0 +1,31 @@
+{
+  "folders": [
+    "animation_controllers",
+    "animations",
+    "attachables",
+    "entity",
+    "materials",
+    "models",
+    "particles",
+    "render_controllers",
+    "sounds",
+    "textures",
+    "ui"
+  ],
+  "json_files": [
+    "biomes_client.json",
+    "sounds.json",
+    "blocks.json"
+  ],
+  "manifest_args": [
+    "header/min_engine_version"
+  ],
+  "txt_args": {
+    "pack.name": "{name} Resource Pack",
+    "pack.description": "Adds resource elements to the '{name}' experience."
+  },
+  "name": "{short_name}_RP",
+  "manifest_type": "resources",
+  "folder_name": "resource_packs",
+  "declaration_name": "world_resource_packs.json"
+}
