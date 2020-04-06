@@ -37,12 +37,11 @@ def gen_pack_info(des, base_game_ver, lock_option, src):
         w = list(filter(is_world, world.iterdir()))
         # returns a list of worlds in the worlds directory which contain levelname.txt
 
-        if len(w) > 1:
-            raise MultipleWorldsError(world)
-            # Too many worlds error
-
         if len(w) == 1:
             w = w[0]
+        else:
+            print("Multiple world folders...")
+            exit()
 
     write_json_not_sorted(w / "packager_data.json", result)
     f = load_json(w / "packager_data.json")
@@ -67,8 +66,14 @@ def package():
         bgv[i] = int(bgv[i])
 
     mev = min_eng_version.get()
-    uuid_w = uuid_world.get()
-    uuid_s = uuid_skin.get()
+
+    uuid_check_val = check_uuid.get()
+    if uuid_check_val == 1:
+        uuid_w = uuid_world.get()
+        uuid_s = uuid_skin.get()
+    else:
+        uuid_w = None
+        uuid_s = None
 
     temp_opt = check_var.get()
     if temp_opt == 0:
@@ -142,37 +147,43 @@ lock_temp = tk.Checkbutton(master=game_version_frame, text='Lock Template Option
 lock_temp.select()
 lock_temp.pack(side=tk.LEFT)
 
-# insert Path in/out, override uuid.
-lower_frame = tk.Frame(master=window, background=background)
-lower_frame.grid(row=4, column=0, sticky='nw', padx=28, pady=5, columnspan=2)
+# insert Path in/out
 widget_width = 68
+path_frame = tk.Frame(master=window, background=background)
+path_frame.grid(row=4, column=0, sticky='nw', padx=28, pady=5, columnspan=2)
 
-path_in = tk.Entry(master=lower_frame, width=widget_width, bg=entry_background, highlightbackground=background)
+path_in = tk.Entry(master=path_frame, width=widget_width, bg=entry_background, highlightbackground=background)
 path_in.insert(0, "Path In")
-path_in.pack(pady=5)
+path_in.pack( pady=5)
 
-path_out = tk.Entry(master=lower_frame, width=widget_width, bg=entry_background, highlightbackground=background)
+path_out = tk.Entry(master=path_frame, width=widget_width, bg=entry_background, highlightbackground=background)
 path_out.insert(0, "Path Out")
-path_out.pack(pady=5)
+path_out.pack( pady=5)
 
-uuid_world = tk.Entry(master=lower_frame, width=widget_width, bg=entry_background, highlightbackground=background)
+# insert uuid check box
+uuid_check_box = tk.Frame(master=window, background=background)
+uuid_check_box.grid(row=5, column=0, sticky='nw', padx=28, pady=5, columnspan=2)
+
+check_uuid = tk.IntVar()
+uuid_check = tk.Checkbutton(master=uuid_check_box, text='Override UUID', highlightbackground=background,
+                            background=background, variable=check_uuid, width=12)
+uuid_check.pack(pady=5)
+
+# insert uuids
+uuid_frame = tk.Frame(master=window, background=background)
+uuid_frame.grid(row=6, column=0, sticky='nw', padx=28, pady=5, columnspan=2)
+
+uuid_world = tk.Entry(master=uuid_frame, width=widget_width, bg=entry_background, highlightbackground=background)
 uuid_world.insert(0, "UUID Override: World Template")
 uuid_world.pack(pady=5)
 
-uuid_skin = tk.Entry(master=lower_frame, width=widget_width, bg=entry_background, highlightbackground=background)
+uuid_skin = tk.Entry(master=uuid_frame, width=widget_width, bg=entry_background, highlightbackground=background)
 uuid_skin.insert(0, "UUID Override: Skin Pack")
 uuid_skin.pack(pady=5)
 
-# insert Package btn
-# btn_frame = tk.Frame(master=window, background=btn_color)
-# package_btn = tk.Button(master=btn_frame, text='Package', height=2, width=10, bg=btn_color,
-#                        fg=font_color, highlightbackground=background, command=package)
-# package_btn.configure(bg=btn_color)
-# package_btn.pack()
-# btn_frame.grid(row=6, column=0, sticky='n', pady=10)
-
+# Insert package button
 package_btn = tk.Button(text='Package', bg='blue', fg=btn_color, height=2, width=10, highlightbackground=background,
                         activebackground=btn_color, command=package)
-package_btn.grid(row=5, column=0, columnspan=2, sticky='n', pady=10)
+package_btn.grid(row=7, column=0, columnspan=2, sticky='n', pady=10)
 
 window.mainloop()
