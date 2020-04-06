@@ -20,7 +20,7 @@ class Content:
             raise NoContentError()
 
     @classmethod
-    def load(cls, path, name=None, languages=None, full_name=None, skin_pack_name=None):
+    def load(cls, path, name=None, uuid_w=None, uuid_s=None, languages=None, full_name=None, skin_pack_name=None):
         path = Path(path)
         if name is None:
             name = path.name  # name of the folder (pre_furniture)
@@ -62,14 +62,14 @@ class Content:
                 'pack.name': full_name
             }
 
-            world = World.load(w, store_art.thumbnail, store_art.pack_icon, fargs,
+            world = World.load(w, store_art.thumbnail, store_art.pack_icon, fargs, uuid_w=uuid_w,
                                languages=languages, txt_args=txt_args)
 
         # Skin Pack
         skin_pack = None
         skin_path = path / 'Skins'
         if skin_path.is_dir():
-            skin_pack = SkinPack.load(skin_path, skin_pack_name, languages)
+            skin_pack = SkinPack.load(skin_path, skin_pack_name, uuid_s, languages)
 
         try:
             return cls(store_art, marketing_art, name, skin_pack, world, full_name, skin_pack_name)

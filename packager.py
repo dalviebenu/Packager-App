@@ -9,14 +9,14 @@ from product import Content
 version = [1, 4, 3]
 
 
-def pack(src, dst, name, **kwargs):
+def pack(src, dst, name, uuid_w, uuid_s, **kwargs):
     # this simply creates a path object with useful methods
     src = Path(src)
     dest = Path(dst + '/contents')
     zip_loc = dst + '/contents'
     mcpack_loc = dst + '/contents/Content/world_template'
     mcpack_dst = dst + '/world_template'
-    content = Content.load(src, name, **kwargs)
+    content = Content.load(src, name, uuid_w, uuid_s, **kwargs)
     content.write(dest)
 
     # Make zip of data and world_template

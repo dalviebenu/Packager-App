@@ -77,7 +77,7 @@ def package():
         temp_opt = True
 
     gen_pack_info(descr, bgv, temp_opt, src)
-    pack(src, dst, name)
+    pack(src, dst, name, uuid_w, uuid_s)
 
 
 background = '#1d1d1d'

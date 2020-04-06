@@ -53,7 +53,7 @@ class World:
         self.texts = Texts(languages=languages, default_content=txt_args, copy_langs=None)
 
     @classmethod
-    def load(cls, path: Path, world_icon, pack_icon, fargs, languages=None, txt_args=None):
+    def load(cls, path: Path, world_icon, pack_icon, fargs, uuid_w=None, languages=None, txt_args=None):
 
         args = {}  # Contains args for the creation of the World: behavior pack, resource pack and copy_params
 
@@ -91,7 +91,8 @@ class World:
             'header': data['manifest']
         }
 
-        return cls(icon=world_icon, txt_args=txt_args, data_packs=data_packs, copy_manifest=copy_manifest, **args)
+        return cls(icon=world_icon, uuid=uuid_w, txt_args=txt_args, data_packs=data_packs, copy_manifest=copy_manifest,
+                   **args)
 
     def write(self, path: Path):
         path = path / 'world_template'

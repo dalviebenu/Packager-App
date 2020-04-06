@@ -8,8 +8,11 @@ from PIL import Image as PILImage
 
 
 class SkinPack:
-    def __init__(self, skins, name, cap_name, texts):
-        self.uuid = uuid4()
+    def __init__(self, skins, name, cap_name, uuid_s, texts):
+        if uuid_s is None:
+            self.uuid = uuid4()
+        else:
+            self.uuid = uuid_s
 
         self.skins = skins
         self.texts = texts
@@ -20,7 +23,7 @@ class SkinPack:
         self.manifest = Manifest(self.uuid, Manifest.SKINS, self.cap_name)
 
     @classmethod
-    def load(cls, path, name, languages=None):
+    def load(cls, path, name, uuid_s=None, languages=None):
         path = Path(path)
 
         if languages is None:
@@ -39,7 +42,7 @@ class SkinPack:
             texts.add_skin(skin)
             skins.append(skin)
 
-        return cls(skins, name, cap_name, texts)
+        return cls(skins, name, cap_name, uuid_s, texts)
 
     def get_json(self):
         return {
