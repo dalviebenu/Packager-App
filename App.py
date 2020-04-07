@@ -130,7 +130,7 @@ def package():
         temp_opt = True
 
     gen_pack_info(descr, bgv, temp_opt, src)
-    pack(src, dst, name, uuid_w, uuid_s)
+    pack(src, dst, name, uuid_w, uuid_s, vers)
 
 
 background = '#1d1d1d'

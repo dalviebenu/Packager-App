@@ -17,12 +17,12 @@ class Manifest:
     MIN_ENGINE_VERSION = [1, 13, 0]
     MIN_ENGINE_VERSION_TYPES = {BEHAVIOR, RESOURCES}
 
-    def __init__(self, uuid, manifest_type, name='pack.name', copy_manifest=None):
+    def __init__(self, uuid, manifest_type, version=None, name='pack.name', copy_manifest=None):
         self.uuid = uuid
         self.type = manifest_type
         self.module_uuid = uuid4()
         self.name = name
-
+        self.version = version
         self.copy_manifest = copy_manifest or {}
 
     def gen_json(self):
@@ -54,6 +54,12 @@ class Manifest:
                     result['header'][self.MIN_ENGINE_VERSION_KEY],
                     self.MIN_ENGINE_VERSION
                 )
+
+        if self.type not in self.MIN_ENGINE_VERSION_TYPES:
+            if self.version is None:
+                pass
+            else:
+                result["header"]["version"] = self.version
 
         return result
 

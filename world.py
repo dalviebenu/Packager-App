@@ -32,12 +32,12 @@ class World:
         'base_game_version': check_base_game_version
     }
 
-    def __init__(self, icon, uuid, txt_args=None, languages=None, data_packs=(), copy_manifest=None,  **kwargs):
+    def __init__(self, icon, uuid, version, txt_args=None, languages=None, data_packs=(), copy_manifest=None,  **kwargs):
         if txt_args is None:
             txt_args = {}
 
         self.icon = icon
-
+        self.version = version
         self.data_packs = data_packs
 
         for param in self.copy_params:
@@ -48,12 +48,12 @@ class World:
         else:
             self.uuid = uuid4()
 
-        self.manifest = Manifest(self.uuid, Manifest.WORLD, copy_manifest=copy_manifest)
+        self.manifest = Manifest(self.uuid, Manifest.WORLD, version=self.version, copy_manifest=copy_manifest)
 
         self.texts = Texts(languages=languages, default_content=txt_args, copy_langs=None)
 
     @classmethod
-    def load(cls, path: Path, world_icon, pack_icon, fargs, uuid_w=None, languages=None, txt_args=None):
+    def load(cls, path: Path, world_icon, pack_icon, fargs, uuid_w=None, version=None, languages=None, txt_args=None):
 
         args = {}  # Contains args for the creation of the World: behavior pack, resource pack and copy_params
 
@@ -91,8 +91,8 @@ class World:
             'header': data['manifest']
         }
 
-        return cls(icon=world_icon, uuid=uuid_w, txt_args=txt_args, data_packs=data_packs, copy_manifest=copy_manifest,
-                   **args)
+        return cls(icon=world_icon, uuid=uuid_w, version=version, txt_args=txt_args, data_packs=data_packs, \
+                   copy_manifest=copy_manifest, **args)
 
     def write(self, path: Path):
         path = path / 'world_template'
