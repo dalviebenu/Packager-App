@@ -103,7 +103,11 @@ def package():
     dst = ''.join(dst.split('\n'))
 
     name = prod_name.get()
+
     vers = version.get()
+    vers = vers.split('.')
+    for i in range(0,len(vers)):
+        vers[i] = int(vers[i])
 
     descr = desc.get(1.0, tk.END)
     descr = ''.join(descr.split('\n'))
