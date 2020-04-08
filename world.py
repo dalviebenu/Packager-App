@@ -53,7 +53,8 @@ class World:
         self.texts = Texts(languages=languages, default_content=txt_args, copy_langs=None)
 
     @classmethod
-    def load(cls, path: Path, world_icon, pack_icon, fargs, uuid_w=None, version=None, languages=None, txt_args=None):
+    def load(cls, path: Path, world_icon, pack_icon, fargs, uuid_w=None, version=None, min_engine_version=None,
+             languages=None, txt_args=None):
 
         args = {}  # Contains args for the creation of the World: behavior pack, resource pack and copy_params
 
@@ -68,7 +69,7 @@ class World:
                     raise MultiplePacksError(path)
 
                 if len(folders) == 1:
-                    data_packs.append(pack.load(pack_path / folders[0], pack_icon, fargs, languages))
+                    data_packs.append(pack.load(pack_path / folders[0], pack_icon, fargs, languages, min_engine_version))
 
         for param in cls.copy_params:
             if (path / param).exists():
@@ -91,7 +92,7 @@ class World:
             'header': data['manifest']
         }
 
-        return cls(icon=world_icon, uuid=uuid_w, version=version, txt_args=txt_args, data_packs=data_packs, \
+        return cls(icon=world_icon, uuid=uuid_w, version=version, txt_args=txt_args, data_packs=data_packs,
                    copy_manifest=copy_manifest, **args)
 
     def write(self, path: Path):

@@ -20,7 +20,7 @@ def mk_pack(folder_name, name, manifest_type, declaration_name, folders=(), json
         def get_txt_args(fargs):
             return {k: v.format(**fargs) for k, v in txt_args.items()}
 
-        def __init__(self, icon, fargs, copy_manifest=None, texts=None, **copy_paths):
+        def __init__(self, icon, fargs, copy_manifest=None, texts=None, min_engine_version=None, **copy_paths):
             if icon is None:
                 raise NoPackIconError()
 
@@ -32,7 +32,8 @@ def mk_pack(folder_name, name, manifest_type, declaration_name, folders=(), json
             self.texts = texts
 
             self.uuid = uuid4()
-            self.manifest = Manifest(self.uuid, manifest_type, copy_manifest=copy_manifest)
+            self.manifest = Manifest(self.uuid, manifest_type, copy_manifest=copy_manifest,
+                                     min_engine_version=min_engine_version)
 
             for param in self.copy_dirs:
                 setattr(self, param, none_or_path(copy_paths.get(param)))
@@ -44,7 +45,7 @@ def mk_pack(folder_name, name, manifest_type, declaration_name, folders=(), json
             self.declaration = PackDeclaration(self.uuid)
 
         @classmethod
-        def load(cls, path, icon, fargs, languages=None):
+        def load(cls, path, icon, fargs, languages=None, min_engine_version=None):
             path = Path(path)
 
             copy_paths = {
@@ -63,7 +64,8 @@ def mk_pack(folder_name, name, manifest_type, declaration_name, folders=(), json
 
             texts = cls.get_texts(path, fargs, languages)
 
-            return cls(icon, fargs, copy_manifest=copy_manifest, texts=texts, **copy_paths)
+            return cls(icon, fargs, copy_manifest=copy_manifest, texts=texts,
+                       min_engine_version=min_engine_version, **copy_paths)
             # this is when those loops param run since at this point copy_paths has all values.
 
         @classmethod

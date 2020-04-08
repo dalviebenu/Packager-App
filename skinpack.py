@@ -20,7 +20,7 @@ class SkinPack:
         self.name = name
         self.cap_name = cap_name
 
-        self.manifest = Manifest(self.uuid, Manifest.SKINS, self.cap_name)
+        self.manifest = Manifest(self.uuid, Manifest.SKINS, name=self.cap_name)
 
     @classmethod
     def load(cls, path, name, uuid_s=None, languages=None):

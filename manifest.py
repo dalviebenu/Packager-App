@@ -17,13 +17,14 @@ class Manifest:
     MIN_ENGINE_VERSION = [1, 13, 0]
     MIN_ENGINE_VERSION_TYPES = {BEHAVIOR, RESOURCES}
 
-    def __init__(self, uuid, manifest_type, version=None, name='pack.name', copy_manifest=None):
+    def __init__(self, uuid, manifest_type, version=None, name='pack.name', copy_manifest=None, min_engine_version=None):
         self.uuid = uuid
         self.type = manifest_type
         self.module_uuid = uuid4()
         self.name = name
         self.version = version
         self.copy_manifest = copy_manifest or {}
+        self.min_engine_version = min_engine_version
 
     def gen_json(self):
         result = {
@@ -46,14 +47,7 @@ class Manifest:
         deep_update(result, self.copy_manifest)
 
         if self.type in self.MIN_ENGINE_VERSION_TYPES:
-            if self.MIN_ENGINE_VERSION_KEY not in result['header']:
-                result['header'][self.MIN_ENGINE_VERSION_KEY] = self.MIN_ENGINE_VERSION
-
-            else:
-                result['header'][self.MIN_ENGINE_VERSION_KEY] = max(
-                    result['header'][self.MIN_ENGINE_VERSION_KEY],
-                    self.MIN_ENGINE_VERSION
-                )
+            result['header'][self.MIN_ENGINE_VERSION_KEY] = self.min_engine_version
 
         if self.type not in self.MIN_ENGINE_VERSION_TYPES:
             if self.version is None:

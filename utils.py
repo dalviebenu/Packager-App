@@ -27,9 +27,9 @@ class FormattingArgs(dict):
         'short_name': lambda name: short_name(lower_name(name))
     }
 
-    def __init__(self, name, **kwargs): # we pass name and fullname in product.py
+    def __init__(self, name, **kwargs):  # we pass name and fullname in product.py
         for key, fct in self._keys.items():
-            if key not in kwargs: # if key not in kwargs then make a new element in kwargs with key and fct(name)
+            if key not in kwargs:  # if key not in kwargs then make a new element in kwargs with key and fct(name)
                 kwargs[key] = fct(name)
 
         super().__init__(**kwargs)
@@ -141,6 +141,7 @@ def get_pixel_matrix(img):
     data = img.getdata()
     return np.asarray([color_code(c) for c in np.asarray(data)], dtype=np.uint32).reshape(
         (img.width, img.height))
+
 
 def zip_file(loc, dst):
     # Make zip of packaged files, will be placed in the parent folder to prevent replication of zip in zip file.
