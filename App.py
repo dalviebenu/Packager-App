@@ -3,12 +3,19 @@ from PIL import Image, ImageTk
 from packager import pack
 from utils import *
 from pathlib import Path
+from tkinter import font
+from tkmacosx import Button
 
-default_text = ["Product Name", "Version", "Description", "Base Game Version", "Min Engine Version", "Path In",
-                "Path Out", "UUID Override: World Template", "UUID Override: Skin Pack"]
+default_text = ["Awesome Product Name", "1.0.0", "Description", "C:/Users/sndbx/Epic Input/Epic Product",
+                "C:/Users/sndbx/Epic Output/Epic Product", "d0ac1144-7f30-4696-bd90-5c5b1bc676c1"]
 
 
 class DefaultEntry(tk.Entry):
+    """
+    This class is the entry widget used in the app. It inherits from tk.Entry but contains two functions which provide
+    disappearing default text.
+    """
+
     def __init__(self, master=None, label="", **kwargs):
         tk.Entry.__init__(self, master, **kwargs)
         self.label = label
@@ -57,11 +64,10 @@ def write_json_not_sorted(path, data):
     with open(path, 'w', encoding='UTF-8') as f:
         json.dump(data, f, sort_keys=False, indent=2)
     # This method is the same as in utils but with sort_keys as False. This is repeated to avoid changing code
-    # in the packager by adding a parameter to the method
+    # in the packager by adding a (sort_keys) parameter to the method
 
 
 def make_list(item):
-
     item = item.split('.')
     for i in range(0, len(item)):
         item[i] = int(item[i])
@@ -106,7 +112,19 @@ def gen_pack_info(des, base_game_ver, lock_option, src):
     write_json_not_sorted(w / "packager_data.json", result)
 
 
+def compare(item_1, reference):
+    if item_1 == reference:
+        return None
+    elif item_1 != reference:
+        return item_1
+
+
 def package():
+    """
+    This function is called when the button is pressed. Takes info from boxes and does some formatting. Generates a
+    packager.json and calls the pack function.
+    """
+
     src = path_in.get()
     src = ''.join(src.split('\n'))
 
@@ -124,13 +142,16 @@ def package():
 
     mev = make_list(min_eng_version.get())
 
-    uuid_check_val = check_uuid.get()
-    if uuid_check_val == 1:
-        uuid_w = uuid_world.get()
-        uuid_s = uuid_skin.get()
-    else:
-        uuid_w = None
-        uuid_s = None
+    #    uuid_check_val = check_uuid.get()
+    #    if uuid_check_val == 1:
+    #        uuid_w = uuid_world.get()
+    #        uuid_s = uuid_skin.get()
+    #    else:
+    #        uuid_w = None
+    #        uuid_s = None
+
+    uuid_w = compare(uuid_world.get(), default_text[5])
+    uuid_s = compare(uuid_skin.get(), default_text[5])
 
     temp_opt = check_var.get()
     if temp_opt == 0:
@@ -142,106 +163,195 @@ def package():
     pack(src, dst, name, uuid_w, uuid_s, vers, mev)
 
 
+# hex codes for colours
 background = '#1d1d1d'
 entry_background = '#242225'
 font_color = '#ffffff'
 btn_color = '#58c8b3'
-default_font_color = 'grey'
+default_font_color = '#666666'
 
 # create window
 window = tk.Tk()
 window.title('Packager')
 window.configure(background=background)
-window.rowconfigure([1, 2, 3, 4, 5, 6, 7], weight=1)
-window.columnconfigure([0, 1], weight=1)
+window.resizable(False, False)
+
+# fonts, need to download and install  Quicksand first
+sub_title_font = font.Font(family='Quicksand', size=16)
+entry_font = font.Font(family="Quicksand", size=14)
+btn_font = font.Font(family="Quicksand", size=14, weight='bold')
+label_font = font.Font(family="Quicksand", size=10)
 
 # insert logo
-img = ImageTk.PhotoImage(Image.open('sndbx_logo_white.png'))
+img = ImageTk.PhotoImage(Image.open('sndbx.png'))
 image_frame = tk.Frame(bg=background)
 panel = tk.Label(master=image_frame, background=background, image=img)
-image_frame.grid(row=0, column=0)
-panel.grid(row=0, column=0, pady=10)
+
+sub_title = tk.Label(master=image_frame, bg=background, fg=font_color, text="MCO Packager v1.0.0 (beta)",
+                     font=sub_title_font)
+
+image_frame.grid(row=0, column=0, pady=(20, 0))
+panel.grid(row=0, column=0)
+sub_title.grid(row=1, column=0, pady=(0, 5))
 
 # insert product name, version, lock temp options entry forms
-upper_frame = tk.Frame(master=window, background=background, width=100)
-upper_frame.grid(row=1, column=0, padx=10, pady=5, sticky='news')
+upper_frame = tk.Frame(master=window, width=101, borderwidth=0, highlightthickness=0, bg=background)
+upper_frame.grid(row=2, column=0, padx=50, sticky='news', pady=(0, 5))
 
-prod_name = DefaultEntry(master=upper_frame, label="Product Name",
-                         highlightbackground=background, bg=entry_background, fg=default_font_color)
+prod_name_lbl = tk.Label(master=upper_frame, bg=background, text="Product Name", font=label_font, borderwidth=0,
+                         fg="white", highlightthickness=0)
+prod_name_lbl.grid(row=0, column=0, padx=19, columnspan=2, sticky='sw')
+
+ver_name_lbl = tk.Label(master=upper_frame, bg=background, text="Version", font=label_font, borderwidth=0,
+                        fg="white", highlightthickness=0)
+ver_name_lbl.grid(row=0, column=0, columnspan=2, padx=(525, 0), sticky='s')
+
+prod_name = DefaultEntry(master=upper_frame, label="Awesome Product Name", borderwidth=0,
+                         highlightbackground=background, bg=entry_background, fg=default_font_color, font=entry_font)
 prod_name.configure(width=50)
-prod_name.pack(side=tk.LEFT, padx=20, pady=5)
+prod_name.grid(row=1, column=0, padx=(19, 0), ipadx=0)
 
-version = DefaultEntry(master=upper_frame, label="Version",
-                       highlightbackground=background, bg=entry_background, fg=font_color)
-version.configure(width=12)
-version.pack(side=tk.RIGHT, padx=20)
+version = DefaultEntry(master=upper_frame, label="1.0.0", font=entry_font,
+                       highlightbackground=background, bg=entry_background, fg=font_color, highlightthickness=0,
+                       borderwidth=0)
+version.configure(width=17)
+version.grid(row=1, column=1, columnspan=2, padx=(57, 0), sticky='w')
 
 # insert description entry form
-desc_frame = tk.Frame(master=window, relief=tk.FLAT, borderwidth=1, bg=background)
-desc_frame.grid(row=2, column=0, padx=20, pady=3)
+desc_label = tk.Label(master=window, background=background, borderwidth=0, highlightthickness=0, fg="white",
+                      font=label_font, text="Product Description")
+desc_label.grid(row=4, column=0, padx=69, pady=(10, 0), sticky="sw")
+
+desc_frame = tk.Frame(master=window, borderwidth=1, bg=background)
+desc_frame.grid(row=5, column=0, padx=69)
 
 desc = DefaultText(master=desc_frame, bg=entry_background, fg='grey', label="Description")
 desc.insert(1.0, "Description")
-desc.configure(height=5, width=77)
+desc.configure(height=5, width=74)
 desc.configure(highlightbackground=background)
-desc.configure(font=('helvetica ', 12))
-desc.pack(side=tk.LEFT)
+desc.configure(font=entry_font)
+desc.pack(pady=(0, 8))
 
 # insert Base game version and min engine version
-game_version_frame = tk.Frame(master=window, bg=background)
-game_version_frame.grid(row=3, column=0, padx=28, pady=5, sticky='news')
+# versions labels
+frame_null2 = tk.Frame(master=window, bg=background, height=20)
+frame_null2.grid(row=6, column=0, padx=20)
 
-base_game_version = DefaultEntry(master=game_version_frame, width=15, bg=entry_background, label="Base Game Version",
-                                 fg=font_color, highlightbackground=background)
+version_frame = tk.Frame(master=window, bg=background)
+version_frame.grid(row=7, column=0, sticky="sw", padx=67)
+
+bgv_label = tk.Label(master=version_frame, text="Base Game Version", font=label_font, fg="white", borderwidth=0,
+                     bg=background, highlightthickness=0, )
+bgv_label.pack(side=tk.LEFT)
+
+mev_label = tk.Label(master=version_frame, text="Min. Engine Version", font=label_font, fg="white", borderwidth=0,
+                     bg=background, highlightthickness=0, )
+mev_label.pack(side=tk.LEFT, padx=56)
+
+lock_label = tk.Label(master=version_frame, text="Lock Template Options", font=label_font, fg="white", borderwidth=0,
+                      bg=background, highlightthickness=0, )
+lock_label.pack(side=tk.LEFT)
+
+# version entry boxes
+game_version_frame = tk.Frame(master=window, bg=background)
+game_version_frame.grid(row=8, column=0, padx=70, sticky='news')
+
+base_game_version = DefaultEntry(master=game_version_frame, width=15, bg=entry_background, label="1.0.0",
+                                 fg=font_color, font=entry_font, highlightbackground=background, highlightthickness=0,
+                                 borderwidth=0)
 base_game_version.pack(side=tk.LEFT)
 
-min_eng_version = DefaultEntry(master=game_version_frame, width=15, bg=entry_background, label="Min Engine Version",
-                               fg=font_color, highlightbackground=background)
-min_eng_version.pack(side=tk.LEFT, padx=10)
+min_eng_version = DefaultEntry(master=game_version_frame, width=15, bg=entry_background, label="1.0.0",
+                               fg=font_color, highlightbackground=background, font=entry_font, highlightthickness=0,
+                               borderwidth=0, )
+min_eng_version.pack(side=tk.LEFT, padx=20)
 
 check_var = tk.IntVar()
-lock_temp = tk.Checkbutton(master=game_version_frame, text='Lock Template Options', fg=font_color,
+lock_temp = tk.Checkbutton(master=game_version_frame, font=entry_font, fg=font_color,
                            highlightbackground=background, background=background, variable=check_var)
 lock_temp.select()
 lock_temp.pack(side=tk.LEFT)
 
 # insert Path in/out
 widget_width = 68
+
+frame_null3 = tk.Frame(master=window, bg=background, height=20)
+frame_null3.grid(row=9, column=0, padx=20)
+
+path_in_label = tk.Label(master=window, bg=background, text="Input Path", fg="white", highlightthickness=0,
+                         borderwidth=0, font=label_font)
+path_in_label.grid(row=10, column=0, sticky="sw", padx=70)
+
 path_frame = tk.Frame(master=window, background=background)
-path_frame.grid(row=4, column=0, sticky='nw', padx=28, pady=5, columnspan=2)
+path_frame.grid(row=11, column=0, sticky='nw', padx=70, columnspan=2)
 
-path_in = DefaultEntry(master=path_frame, width=widget_width, bg=entry_background, fg=font_color, label="Path In",
-                       highlightbackground=background)
-path_in.pack(pady=5)
+path_in = DefaultEntry(master=path_frame, width=widget_width, bg=entry_background, fg=font_color, font=entry_font,
+                       label="C:/Users/sndbx/Epic Input/Epic Product", highlightbackground=background,
+                       highlightthickness=0, borderwidth=0, )
+path_in.configure(width=74)
+path_in.grid(row=0, column=0, pady=(0, 5))
 
-path_out = DefaultEntry(master=path_frame, width=widget_width, bg=entry_background, fg=font_color, label="Path Out",
-                        highlightbackground=background)
-path_out.pack(pady=5)
+path_out_label = tk.Label(master=path_frame, bg=background, text="Output Path", fg="white", highlightthickness=0,
+                          borderwidth=0, font=label_font)
+path_out_label.grid(row=1, column=0, sticky='sw', pady=(5, 0))
+
+path_out = DefaultEntry(master=path_frame, width=widget_width, bg=entry_background, fg=font_color,
+                        label="C:/Users/sndbx/Epic Output/Epic Product", font=entry_font,
+                        highlightbackground=background,
+                        highlightthickness=0, borderwidth=0)
+
+path_out.configure(width=74)
+path_out.grid(row=2, column=0, pady=(0, 10))
 
 # insert uuid check box
-uuid_check_box = tk.Frame(master=window, background=background)
-uuid_check_box.grid(row=5, column=0, sticky='nw', padx=28, pady=5, columnspan=2)
+# uuid_check_box = tk.Frame(master=window, background=background)
+# uuid_check_box.grid(row=13, column=0, sticky='nw', padx=70, columnspan=2)
 
-check_uuid = tk.IntVar()
-uuid_check = tk.Checkbutton(master=uuid_check_box, text='Override UUID', highlightbackground=background,
-                            fg=font_color, background=background, variable=check_uuid, width=12)
-uuid_check.pack(pady=5)
+# uuid_check_label = tk.Label(master=uuid_check_box, bg=background, text="Override UUID", fg="white",
+#                            highlightthickness=0, borderwidth=0, font=label_font)
+# uuid_check_label.grid(row=0, column=0, sticky='sw', pady=(5, 0))
+
+# check_uuid = tk.IntVar()
+# uuid_check = tk.Checkbutton(master=uuid_check_box, highlightbackground=background,
+#                            font=entry_font, fg=font_color, background=background, variable=check_uuid,
+#                           highlightthickness=0, borderwidth=0)
+# uuid_check.grid(row=1, column=0, sticky='nw')
 
 # insert uuids
 uuid_frame = tk.Frame(master=window, background=background)
-uuid_frame.grid(row=6, column=0, sticky='nw', padx=28, pady=5, columnspan=2)
+uuid_frame.grid(row=13, column=0, sticky='nw', padx=70, pady=10, columnspan=2)
+
+uuid_world_label = tk.Label(master=uuid_frame, bg=background, text="UUID Override: World Template", fg="white",
+                            highlightthickness=0, borderwidth=0, font=label_font)
+uuid_world_label.grid(row=0, column=0, sticky='sw', pady=(5, 0))
 
 uuid_world = DefaultEntry(master=uuid_frame, width=widget_width, bg=entry_background, fg=font_color,
-                          label="UUID Override: World Template", highlightbackground=background)
-uuid_world.pack(pady=5)
+                          font=entry_font, label="d0ac1144-7f30-4696-bd90-5c5b1bc676c1", highlightbackground=background,
+                          highlightthickness=0, borderwidth=0)
+uuid_world.configure(width=74)
+uuid_world.grid(row=1, column=0, sticky='nw', pady=(0, 5))
+
+uuid_world_label = tk.Label(master=uuid_frame, bg=background, text="UUID Override: Skin Pack", fg="white",
+                            highlightthickness=0, borderwidth=0, font=label_font)
+uuid_world_label.grid(row=2, column=0, sticky='sw', pady=(8, 0))
 
 uuid_skin = DefaultEntry(master=uuid_frame, width=widget_width, bg=entry_background, fg=font_color,
-                         label="UUID Override: Skin Pack", highlightbackground=background)
-uuid_skin.pack(pady=5)
+                         font=entry_font, label="d0ac1144-7f30-4696-bd90-5c5b1bc676c1", highlightbackground=background,
+                         highlightthickness=0, borderwidth=0)
+uuid_skin.configure(width=74)
+uuid_skin.grid(row=3, column=0, sticky='nw')
 
 # Insert package button
-package_btn = tk.Button(text='Package', bg='blue', fg=btn_color, height=2, width=10, highlightbackground=background,
-                        activebackground=btn_color, command=package)
-package_btn.grid(row=7, column=0, columnspan=2, sticky='n', pady=10)
+# package_btn = tk.Button(master=uuid_frame, text='Package', bg='blue', fg=btn_color, height=2, width=10,
+#                         highlightbackground=background,font=btn_font, activebackground=btn_color, command=package)
+# package_btn.pack()
+# package_btn.grid(row=7, column=0, columnspan=2, sticky='n', pady=10)
+
+btn_frame = tk.Frame(master=window, background=background)
+btn_frame.grid(row=14, column=0, columnspan=2, sticky='n', pady=10)
+
+btn = Button(master=btn_frame, text="Package", bg=btn_color, fg='white', height=30, width=110, relief=tk.RAISED,
+             highlightbackground=background, font=btn_font, command=package)
+btn.pack(pady=(10, 20))
 
 window.mainloop()
