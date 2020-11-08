@@ -17,7 +17,8 @@ class Manifest:
     MIN_ENGINE_VERSION = [1, 13, 0]
     MIN_ENGINE_VERSION_TYPES = {BEHAVIOR, RESOURCES}
 
-    def __init__(self, uuid, manifest_type, version=None, name='pack.name', copy_manifest=None, min_engine_version=None):
+    def __init__(self, path_data: Path, uuid, manifest_type, version=None, name='pack.name', copy_manifest=None,
+                 min_engine_version=None):
         self.uuid = uuid
         self.type = manifest_type
         self.module_uuid = uuid4()
@@ -25,20 +26,20 @@ class Manifest:
         self.version = version
         self.copy_manifest = copy_manifest or {}
         self.min_engine_version = min_engine_version
+        self.path_data = path_data
 
     def gen_json(self):
         result = {
             "header": {
                 "name": self.name,
-                "description": "pack.description",
-                "uuid": str(self.uuid),
-                "version": [1, 0, 0]
+                "version": NoIndent([1, 0, 0]),
+                "uuid": str(self.uuid)
             },
             "modules": [
                 {
+                    "version": NoIndent([1, 0, 0]),
                     "type": str(self.type),
-                    "uuid": str(self.module_uuid),
-                    "version": [1, 0, 0]
+                    "uuid": str(self.module_uuid)
                 }
             ],
             "format_version": self.CURRENT_FORMAT.get(self.type, self.CURRENT_FORMAT['default'])
@@ -46,14 +47,19 @@ class Manifest:
 
         deep_update(result, self.copy_manifest)
 
+        data = load_json(self.path_data / "packager_data.json")
+        descr = data["texts"]["pack.description"]
+
         if self.type in self.MIN_ENGINE_VERSION_TYPES:
-            result['header'][self.MIN_ENGINE_VERSION_KEY] = self.min_engine_version
+            result['header'][self.MIN_ENGINE_VERSION_KEY] = NoIndent(self.min_engine_version)
+            result['header']['description'] = descr
 
         if self.type not in self.MIN_ENGINE_VERSION_TYPES:
             if self.version is None:
                 pass
             else:
-                result["header"]["version"] = self.version
+                result["header"]["version"] = NoIndent(self.version)
+                result['header']['description'] = descr
 
         return result
 
@@ -61,7 +67,7 @@ class Manifest:
         write_json(path / 'manifest.json', self.gen_json())
 
     def __str__(self):
-        return json.dumps(self.gen_json(), sort_keys=True, indent=2)
+        return json.dumps(self.gen_json(), cls=MyEncoder, sort_keys=False, indent=2)
 
     @staticmethod
     def get_copy_manifest(path, manifest_args):

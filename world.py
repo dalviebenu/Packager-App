@@ -32,7 +32,7 @@ class World:
         'base_game_version': check_base_game_version
     }
 
-    def __init__(self, icon, uuid, version, txt_args=None, languages=None, data_packs=(), copy_manifest=None,  **kwargs):
+    def __init__(self, path_data: Path, icon, uuid, version, txt_args=None, languages=None, data_packs=(), copy_manifest=None,  **kwargs):
         if txt_args is None:
             txt_args = {}
 
@@ -48,7 +48,7 @@ class World:
         else:
             self.uuid = uuid4()
 
-        self.manifest = Manifest(self.uuid, Manifest.WORLD, version=self.version, copy_manifest=copy_manifest)
+        self.manifest = Manifest(path_data, self.uuid, Manifest.WORLD, version=self.version, copy_manifest=copy_manifest)
 
         self.texts = Texts(languages=languages, default_content=txt_args, copy_langs=None)
 
@@ -69,7 +69,8 @@ class World:
                     raise MultiplePacksError(path)
 
                 if len(folders) == 1:
-                    data_packs.append(pack.load(pack_path / folders[0], pack_icon, fargs, languages, min_engine_version))
+                    data_packs.append(pack.load(pack_path / folders[0], path, pack_icon, fargs, languages,
+                                                min_engine_version))
 
         for param in cls.copy_params:
             if (path / param).exists():
@@ -86,13 +87,13 @@ class World:
 
         for key, value in data['manifest'].items():
             if key in cls.MANIFEST_DATA_CHECK:
-                data['manifest'][key] = cls.MANIFEST_DATA_CHECK[key](value)
+                data['manifest'][key] = NoIndent(cls.MANIFEST_DATA_CHECK[key](value))
 
         copy_manifest = {
             'header': data['manifest']
         }
 
-        return cls(icon=world_icon, uuid=uuid_w, version=version, txt_args=txt_args, data_packs=data_packs,
+        return cls(path_data=path, icon=world_icon, uuid=uuid_w, version=version, txt_args=txt_args, data_packs=data_packs,
                    copy_manifest=copy_manifest, **args)
 
     def write(self, path: Path):

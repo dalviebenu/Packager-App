@@ -8,7 +8,7 @@ from PIL import Image as PILImage
 
 
 class SkinPack:
-    def __init__(self, skins, name, cap_name, uuid_s, texts):
+    def __init__(self, path_data: Path, skins, name, cap_name, uuid_s, texts):
         if uuid_s is None:
             self.uuid = uuid4()
         else:
@@ -20,11 +20,24 @@ class SkinPack:
         self.name = name
         self.cap_name = cap_name
 
-        self.manifest = Manifest(self.uuid, Manifest.SKINS, name=self.cap_name)
+        self.manifest = Manifest(path_data, self.uuid, Manifest.SKINS, name=self.cap_name)
 
     @classmethod
     def load(cls, path, name, uuid_s=None, languages=None):
         path = Path(path)
+
+        new_path = path.parents[0]
+        new_path = new_path / "world"
+
+        if new_path.is_dir():
+            worlds = list(filter(is_world, new_path.iterdir()))
+
+        if len(worlds) > 1:
+            raise MultipleWorldsError(new_path)
+
+        if len(worlds) == 1:
+            w = worlds[0]
+        new_path = w
 
         if languages is None:
             languages = ['en_US']
@@ -42,7 +55,7 @@ class SkinPack:
             texts.add_skin(skin)
             skins.append(skin)
 
-        return cls(skins, name, cap_name, uuid_s, texts)
+        return cls(new_path, skins, name, cap_name, uuid_s, texts)
 
     def get_json(self):
         return {
@@ -146,3 +159,11 @@ class Skin:
                 pos = np.where(mask)
                 print('Error detected in skin "{}": Same color from {} to {}, in (x, y) format'.format(
                     self.name, (pos[0][0], pos[1][0]), (pos[0][-1], pos[1][-1])))
+
+
+class MultipleWorldsError(Exception):
+    def __init__(self, path):
+        self.path = path
+
+    def __str__(self):
+        return 'Multiple worlds found in "{}"'.format(self.path)

@@ -10,7 +10,8 @@
     "render_controllers",
     "sounds",
     "textures",
-    "ui"
+    "ui",
+    "items"
   ],
   "json_files": [
     "biomes_client.json",
