@@ -146,7 +146,7 @@ def package():
 
     name = prod_name.get()
 
-    vers = make_list(version.get()) 
+    vers = make_list(version.get())
 
     descr = desc.get(1.0, tk.END)
     descr = ''.join(descr.split('\n'))
@@ -190,7 +190,7 @@ if __name__ == "__main__":
     background = '#242225'
     entry_background = '#1d1d1d'
     font_color = '#ffffff'
-    btn_color = '#58c8b3'
+    btn_color = '#2250E0'
     default_font_color = '#666666'
 
     # create window
@@ -211,7 +211,7 @@ if __name__ == "__main__":
     image_frame = tk.Frame(bg=background)
     panel = tk.Label(master=image_frame, background=background, image=img)
 
-    sub_title = tk.Label(master=image_frame, bg=background, fg=font_color, text="MCO Packager v2.0.1 (beta)",
+    sub_title = tk.Label(master=image_frame, bg=background, fg=font_color, text="MCO Packager v2.0.1",
                          font=sub_title_font)
 
     image_frame.grid(row=0, column=0, pady=(10, 10))
@@ -333,10 +333,10 @@ if __name__ == "__main__":
     # insert Base game version and min engine version
     # versions labels
     frame_null2 = tk.Frame(master=window, bg=background, height=20)
-    frame_null2.grid(row=11, column=0, padx=20)
+    frame_null2.grid(row=10, column=0, padx=20)
 
     version_frame = tk.Frame(master=window, bg=background)
-    version_frame.grid(row=12, column=0, sticky="sw", padx=116)
+    version_frame.grid(row=11, column=0, sticky="sw", padx=116)
 
     bgv_label = tk.Label(master=version_frame, text="Base Game Version", font=label_font, fg="white", borderwidth=0,
                          bg=background, highlightthickness=0, )
@@ -353,7 +353,7 @@ if __name__ == "__main__":
 
     # version entry boxes
     game_version_frame = tk.Frame(master=window, bg=background)
-    game_version_frame.grid(row=11, column=0, padx=119, sticky='news')
+    game_version_frame.grid(row=12, column=0, padx=119, sticky='news')
 
     blue_frame_bgv = tk.Frame(master=game_version_frame, bg=btn_color, width=4, height=20, highlightthickness=0,
                               borderwidth=0)
@@ -495,16 +495,16 @@ if __name__ == "__main__":
     btn_frame = tk.Frame(master=window, background=background, highlightthickness=0, borderwidth=0)
     btn_frame.grid(row=16, column=0, columnspan=2, sticky='n', pady=(10, 50))
 
-    frame1 = tk.Frame(master=btn_frame, bg='#68EBD2', height=5, width=110, highlightbackground=background,
+    frame1 = tk.Frame(master=btn_frame, bg='#2250E0', height=5, width=110, highlightbackground=background,
                       highlightthickness=0, borderwidth=0)
     frame1.grid(row=0, column=0)
 
     btn = Button(master=btn_frame, text="Package", bg=btn_color, fg='white', height=30, width=110,
-                 borderwidth=0, activebackground='#4FB19F', highlightbackground=background, highlightthickness=0,
+                 borderwidth=0, activebackground='#2250E0', highlightbackground=background, highlightthickness=0,
                  bd=0, font=btn_font, command=package)
     btn.grid(row=1, column=0, ipadx=0, ipady=0)
 
-    frame1 = tk.Frame(master=btn_frame, bg='#47A190', height=5, width=110, highlightbackground=background,
+    frame1 = tk.Frame(master=btn_frame, bg='#2250E0', height=5, width=110, highlightbackground=background,
                       highlightthickness=0, borderwidth=0)
     frame1.grid(row=2, column=0)
 
