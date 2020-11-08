@@ -7,7 +7,8 @@ from tkinter import font
 from tkmacosx import Button
 
 default_text = ["Awesome Product Name", "1.0.0", "Description", "C:/Users/sndbx/Epic Input/Epic Product",
-                "C:/Users/sndbx/Epic Output/Epic Product", "d0ac1144-7f30-4696-bd90-5c5b1bc676c1"]
+                "C:/Users/sndbx/Epic Output/Epic Product", "d0ac1144-7f30-4696-bd90-5c5b1bc676c1", "RP Description",
+                "BP Description"]
 
 
 def center(toplevel):
@@ -137,7 +138,6 @@ def package():
     This function is called when the button is pressed. Takes info from boxes and does some formatting. Generates a
     packager.json and calls the pack function.
     """
-
     src = path_in.get()
     src = ''.join(src.split('\n'))
 
@@ -146,10 +146,16 @@ def package():
 
     name = prod_name.get()
 
-    vers = make_list(version.get())
+    vers = make_list(version.get()) 
 
     descr = desc.get(1.0, tk.END)
     descr = ''.join(descr.split('\n'))
+
+    descr_rp = desc_rp.get(1.0, tk.END)
+    descr_rp = ''.join(descr_rp.split('\n'))
+
+    descr_bp = desc_bp.get(1.0, tk.END)
+    descr_bp = ''.join(descr_bp.split('\n'))
 
     bgv = make_list(base_game_version.get())
 
@@ -171,6 +177,9 @@ def package():
         temp_opt = False
     elif temp_opt == 1:
         temp_opt = True
+
+    descriptions["BP"] = descr_bp
+    descriptions["RP"] = descr_rp
 
     gen_pack_info(descr, bgv, temp_opt, src)
     pack(src, dst, name, uuid_w, uuid_s, vers, mev)
@@ -198,16 +207,16 @@ if __name__ == "__main__":
     label_font = font.Font(family="Quicksand", size=10)
 
     # insert logo
-    img = ImageTk.PhotoImage(Image.open('sndbx.png'))
+    img = ImageTk.PhotoImage(Image.open('SNDBX_logo.png'))
     image_frame = tk.Frame(bg=background)
     panel = tk.Label(master=image_frame, background=background, image=img)
 
-    sub_title = tk.Label(master=image_frame, bg=background, fg=font_color, text="MCO Packager v1.0.0 (beta)",
+    sub_title = tk.Label(master=image_frame, bg=background, fg=font_color, text="MCO Packager v2.0.1 (beta)",
                          font=sub_title_font)
 
-    image_frame.grid(row=0, column=0, pady=(50, 0))
+    image_frame.grid(row=0, column=0, pady=(10, 10))
     panel.grid(row=0, column=0)
-    sub_title.grid(row=1, column=0, pady=(0, 5))
+    sub_title.grid(row=1, column=0, pady=(5, 2))
 
     # insert product name, version, lock temp options entry forms
     upper_frame = tk.Frame(master=window, width=101, borderwidth=0, highlightthickness=0, bg=background)
@@ -257,29 +266,77 @@ if __name__ == "__main__":
     desc_frame = tk.Frame(master=window, borderwidth=1, bg=background)
     desc_frame.grid(row=5, column=0, padx=118)
 
-    blue_frame_desc = tk.Frame(master=desc_frame, bg=btn_color, width=4, height=92, highlightthickness=0,
+    blue_frame_desc = tk.Frame(master=desc_frame, bg=btn_color, width=4, height=57, highlightthickness=0,
                                borderwidth=0)
     blue_frame_desc.grid(row=0, column=0, sticky='nw')
 
-    frame_desc = tk.Frame(master=desc_frame, bg=entry_background, width=6, height=92, highlightthickness=0,
+    frame_desc = tk.Frame(master=desc_frame, bg=entry_background, width=6, height=57, highlightthickness=0,
                           borderwidth=0)
     frame_desc.grid(row=0, column=0, sticky='nw', padx=(4, 0))
 
     desc = DefaultText(master=desc_frame, bg=entry_background, fg='grey', label="Description", highlightthickness=0,
                        borderwidth=0)
     desc.insert(1.0, "Description")
-    desc.configure(height=5, width=74)
+    desc.configure(height=3, width=74)
     desc.configure(highlightbackground=background)
     desc.configure(font=entry_font)
     desc.grid(row=0, column=0, padx=10, pady=(0, 8), sticky='nw')
 
+    # insert RP description entry form
+    desc_rp_label = tk.Label(master=window, background=background, borderwidth=0, highlightthickness=0, fg="white",
+                             font=label_font, text="Product RP Description")
+    desc_rp_label.grid(row=6, column=0, padx=116, pady=(10, 0), sticky="sw")
+
+    desc_rp_frame = tk.Frame(master=window, borderwidth=1, bg=background)
+    desc_rp_frame.grid(row=7, column=0, padx=118)
+
+    blue_frame_desc_rp = tk.Frame(master=desc_rp_frame, bg=btn_color, width=4, height=57, highlightthickness=0,
+                                  borderwidth=0)
+    blue_frame_desc_rp.grid(row=0, column=0, sticky='nw')
+
+    frame_desc_rp = tk.Frame(master=desc_rp_frame, bg=entry_background, width=6, height=57, highlightthickness=0,
+                             borderwidth=0)
+    frame_desc_rp.grid(row=0, column=0, sticky='nw', padx=(4, 0))
+
+    desc_rp = DefaultText(master=desc_rp_frame, bg=entry_background, fg='grey', label="RP Description",
+                          highlightthickness=0, borderwidth=0)
+    desc_rp.insert(1.0, "RP Description")
+    desc_rp.configure(height=3, width=74)
+    desc_rp.configure(highlightbackground=background)
+    desc_rp.configure(font=entry_font)
+    desc_rp.grid(row=0, column=0, padx=10, pady=(0, 8), sticky='nw')
+
+    # insert BP description entry form
+    desc_bp_label = tk.Label(master=window, background=background, borderwidth=0, highlightthickness=0, fg="white",
+                             font=label_font, text="Product BP Description")
+    desc_bp_label.grid(row=8, column=0, padx=116, pady=(10, 0), sticky="sw")
+
+    desc_bp_frame = tk.Frame(master=window, borderwidth=1, bg=background)
+    desc_bp_frame.grid(row=9, column=0, padx=118)
+
+    blue_frame_desc_bp = tk.Frame(master=desc_bp_frame, bg=btn_color, width=4, height=57, highlightthickness=0,
+                                  borderwidth=0)
+    blue_frame_desc_bp.grid(row=0, column=0, sticky='nw')
+
+    frame_desc_bp = tk.Frame(master=desc_bp_frame, bg=entry_background, width=6, height=57, highlightthickness=0,
+                             borderwidth=0)
+    frame_desc_bp.grid(row=0, column=0, sticky='nw', padx=(4, 0))
+
+    desc_bp = DefaultText(master=desc_bp_frame, bg=entry_background, fg='grey', label="BP Description",
+                          highlightthickness=0, borderwidth=0)
+    desc_bp.insert(1.0, "BP Description")
+    desc_bp.configure(height=3, width=74)
+    desc_bp.configure(highlightbackground=background)
+    desc_bp.configure(font=entry_font)
+    desc_bp.grid(row=0, column=0, padx=10, pady=(0, 8), sticky='nw')
+
     # insert Base game version and min engine version
     # versions labels
     frame_null2 = tk.Frame(master=window, bg=background, height=20)
-    frame_null2.grid(row=6, column=0, padx=20)
+    frame_null2.grid(row=11, column=0, padx=20)
 
     version_frame = tk.Frame(master=window, bg=background)
-    version_frame.grid(row=7, column=0, sticky="sw", padx=116)
+    version_frame.grid(row=12, column=0, sticky="sw", padx=116)
 
     bgv_label = tk.Label(master=version_frame, text="Base Game Version", font=label_font, fg="white", borderwidth=0,
                          bg=background, highlightthickness=0, )
@@ -296,7 +353,7 @@ if __name__ == "__main__":
 
     # version entry boxes
     game_version_frame = tk.Frame(master=window, bg=background)
-    game_version_frame.grid(row=8, column=0, padx=119, sticky='news')
+    game_version_frame.grid(row=11, column=0, padx=119, sticky='news')
 
     blue_frame_bgv = tk.Frame(master=game_version_frame, bg=btn_color, width=4, height=20, highlightthickness=0,
                               borderwidth=0)
@@ -335,14 +392,14 @@ if __name__ == "__main__":
     widget_width = 68
 
     frame_null3 = tk.Frame(master=window, bg=background, height=20)
-    frame_null3.grid(row=9, column=0, padx=20)
+    frame_null3.grid(row=12, column=0, padx=20)
 
     path_in_label = tk.Label(master=window, bg=background, text="Input Path", fg="white", highlightthickness=0,
                              borderwidth=0, font=label_font)
-    path_in_label.grid(row=10, column=0, sticky="sw", padx=117)
+    path_in_label.grid(row=13, column=0, sticky="sw", padx=117)
 
     path_frame = tk.Frame(master=window, background=background)
-    path_frame.grid(row=11, column=0, sticky='nw', padx=119, columnspan=2)
+    path_frame.grid(row=14, column=0, sticky='nw', padx=119, columnspan=2)
 
     blue_frame_path1 = tk.Frame(master=path_frame, bg=btn_color, width=4, height=20, highlightthickness=0,
                                 borderwidth=0)
@@ -394,7 +451,7 @@ if __name__ == "__main__":
 
     # insert uuids
     uuid_frame = tk.Frame(master=window, background=background)
-    uuid_frame.grid(row=13, column=0, sticky='nw', padx=119, pady=10, columnspan=2)
+    uuid_frame.grid(row=15, column=0, sticky='nw', padx=119, pady=10, columnspan=2)
 
     uuid_world_label = tk.Label(master=uuid_frame, bg=background, text="UUID Override: World Template", fg="white",
                                 highlightthickness=0, borderwidth=0, font=label_font)
@@ -436,7 +493,7 @@ if __name__ == "__main__":
     # Insert package button
 
     btn_frame = tk.Frame(master=window, background=background, highlightthickness=0, borderwidth=0)
-    btn_frame.grid(row=14, column=0, columnspan=2, sticky='n', pady=(10, 50))
+    btn_frame.grid(row=16, column=0, columnspan=2, sticky='n', pady=(10, 50))
 
     frame1 = tk.Frame(master=btn_frame, bg='#68EBD2', height=5, width=110, highlightbackground=background,
                       highlightthickness=0, borderwidth=0)

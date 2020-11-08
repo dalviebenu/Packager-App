@@ -13,6 +13,9 @@ import re
 
 src_dir = Path(path.realpath(__file__)).parent
 
+descriptions = {}
+# Where the BP and RP pack descriptions are kept.
+
 HD = (1920, 1080)
 MEDIUM = (800, 450)
 L_SQ = (256, 256)  # Large square
@@ -196,3 +199,5 @@ def zip_file(loc, dst):
                 file_path = path.abspath(os.path.join(folderName, filename))
                 arcname = file_path[len(abs_src) + 1:]
                 zf.write(file_path, arcname)
+
+

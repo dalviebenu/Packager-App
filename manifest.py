@@ -54,9 +54,15 @@ class Manifest:
             result['header'][self.MIN_ENGINE_VERSION_KEY] = NoIndent(self.min_engine_version)
             result['header']['description'] = descr
 
+            if self.type == 'data':
+                result['header']['description'] = descriptions["BP"]
+
+            if self.type == 'resources':
+                result['header']['description'] = descriptions["RP"]
+
         if self.type not in self.MIN_ENGINE_VERSION_TYPES:
             if self.version is None:
-                pass
+                result['header']['description'] = descr
             else:
                 result["header"]["version"] = NoIndent(self.version)
                 result['header']['description'] = descr
