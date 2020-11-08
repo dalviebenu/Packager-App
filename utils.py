@@ -13,7 +13,7 @@ import re
 
 src_dir = Path(path.realpath(__file__)).parent
 
-descriptions = {}
+app_data = {}
 # Where the BP and RP pack descriptions are kept.
 
 HD = (1920, 1080)

@@ -55,10 +55,12 @@ class Manifest:
             result['header']['description'] = descr
 
             if self.type == 'data':
-                result['header']['description'] = descriptions["BP"]
+                result['header']['name'] = (app_data["name"] + " Behavior Pack")
+                result['header']['description'] = app_data["BP"]
 
             if self.type == 'resources':
-                result['header']['description'] = descriptions["RP"]
+                result['header']['name'] = (app_data["name"] + " Resource Pack")
+                result['header']['description'] = app_data["RP"]
 
         if self.type not in self.MIN_ENGINE_VERSION_TYPES:
             if self.version is None:

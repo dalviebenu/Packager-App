@@ -178,8 +178,9 @@ def package():
     elif temp_opt == 1:
         temp_opt = True
 
-    descriptions["BP"] = descr_bp
-    descriptions["RP"] = descr_rp
+    app_data["BP"] = descr_bp
+    app_data["RP"] = descr_rp
+    app_data["name"] = name
 
     gen_pack_info(descr, bgv, temp_opt, src)
     pack(src, dst, name, uuid_w, uuid_s, vers, mev)
